@@ -118,7 +118,7 @@ body.theme-contrast .grain { opacity: 0; }
 }
 
 /* ════════ SHELL / PROGRESS ════════ */
-.shell { max-width: var(--shell); margin: 0 auto; padding: 0 2.5rem; position: relative; z-index: 2; }
+.shell { max-width: var(--shell); margin: 0 auto; padding: 0 4rem; position: relative; z-index: 2; }
 .progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 60; background: var(--ember); transition: width .12s linear; }
 
 /* ════════ READING RULER ════════ */
@@ -149,8 +149,8 @@ header.stuck {
 }
 body.focus header { transform: translateY(-100%); }
 
-.bar { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 1.6rem; padding: .9rem 0; transition: padding .4s; }
-header.stuck .bar { padding: .65rem 0; }
+.bar { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 1.6rem; padding-top: .9rem; padding-bottom: .9rem; transition: padding .4s; }
+header.stuck .bar { padding-top: .65rem; padding-bottom: .65rem; }
 
 .brand { display: flex; align-items: center; text-decoration: none; color: var(--paper); flex-shrink: 0; }
 .brand .en { font-family: "Fraunces"; font-weight: 600; font-size: 1.4rem; letter-spacing: -.01em; line-height: 1; }
