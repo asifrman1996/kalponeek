@@ -689,6 +689,19 @@ select.fi option { background: #1e1812; color: #ece3d2; }
   .at-ref, .at-date { display: none; }
 }
 
+/* ════════ COMING SOON PAGE ════════ */
+.cs-main { position: relative; z-index: 2; min-height: calc(100vh - 12rem); display: flex; align-items: center; }
+.cs-shell { width: 100%; }
+.cs-content { max-width: 36rem; margin: 0 auto; text-align: center; padding: 5rem 0 6rem; }
+.cs-eyebrow { font-family: "Archivo"; font-size: .72rem; letter-spacing: .4em; text-transform: uppercase; color: var(--ember); margin-bottom: 1.2rem; }
+.cs-title { font-family: "Fraunces"; font-weight: 600; font-size: clamp(3rem,8vw,5.5rem); line-height: .94; letter-spacing: -.03em; color: var(--paper); margin-bottom: .5rem; }
+.cs-bengali { font-family: "Tiro Bangla", serif; font-size: clamp(1.4rem,3vw,2rem); color: var(--gilt); line-height: 1.4; margin-bottom: 1.6rem; }
+.cs-tagline { color: var(--paper-2); font-size: 1.1rem; font-style: italic; line-height: 1.65; max-width: 28rem; margin: 0 auto; }
+.cs-rule { height: 1px; background: var(--line); margin: 2.2rem auto; max-width: 6rem; }
+.cs-note { font-family: "Archivo"; font-size: .8rem; letter-spacing: .04em; color: var(--dim); line-height: 1.7; }
+.cs-link { color: var(--ember); text-decoration: none; transition: color .25s; }
+.cs-link:hover { color: var(--paper); }
+
 /* ════════ AUTH MODAL ════════ */
 .auth-scrim {
   position: fixed; inset: 0; z-index: 110;

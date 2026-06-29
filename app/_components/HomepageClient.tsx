@@ -299,9 +299,9 @@ export default function HomepageClient() {
           </div>
           <div className="hdr-right">
             <nav>
-              <a href="#latest">Stories</a>
-              <a href="#cats">Genres</a>
-              <a href="#submit">Submit</a>
+              <Link href="/stories">Stories</Link>
+              <Link href="/genres">Genres</Link>
+              <Link href="/submit">Submit</Link>
             </nav>
             {user ? (
               <div className="user-menu-wrap" ref={userMenuRef}>
@@ -383,7 +383,7 @@ export default function HomepageClient() {
         <div className="shell">
           <div className="sec-head reveal">
             <span className="sec-title">The lead</span>
-            <a className="sec-more" href="#">All features →</a>
+            <Link className="sec-more" href="/stories">All features →</Link>
           </div>
           <article className="lead">
             <div className="art reveal clip">
@@ -433,9 +433,9 @@ export default function HomepageClient() {
                   ['Interviews',11],['Reviews',23],['Culture',19],['Mature 18+',9],
                   ['Dark & unsettling',null],['Tender & quiet',null],['Strange & surreal',null],['Under 5 min',null],
                 ].map(([label, count], i) => (
-                  <a key={i} className="chip" href="#">
+                  <Link key={i} className="chip" href="/genres">
                     {label}{count != null && <span className="n">{count}</span>}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -448,7 +448,7 @@ export default function HomepageClient() {
         <div className="shell">
           <div className="sec-head reveal">
             <span className="sec-title">Latest</span>
-            <a className="sec-more" href="#">Browse all →</a>
+            <Link className="sec-more" href="/stories">Browse all →</Link>
           </div>
           <div className="carousel-track-wrap">
             <div className="carousel-track" ref={carouselTrackRef}>
@@ -555,7 +555,7 @@ export default function HomepageClient() {
         <div className="shell reveal">
           <h2>Have something to say?</h2>
           <p>We read fiction, essays, poetry, and translations year-round. Submissions are open.</p>
-          <a className="btn" href="#">Submit your writing</a>
+          <Link className="btn" href="/submit">Submit your writing</Link>
         </div>
       </section>
 
@@ -569,7 +569,7 @@ export default function HomepageClient() {
           </div>
           <nav>
             <a href="#">About</a>
-            <a href="#">Submit</a>
+            <Link href="/submit">Submit</Link>
             <a href="#">Masthead</a>
             <a href="#">Contact</a>
           </nav>
