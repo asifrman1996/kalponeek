@@ -41,6 +41,14 @@ export interface Comment {
   created_at: string
 }
 
+export interface Profile {
+  id: string
+  email: string
+  display_name: string | null
+  avatar_url: string | null
+  created_at: string
+}
+
 export interface Submission {
   id: string
   reference_number: string

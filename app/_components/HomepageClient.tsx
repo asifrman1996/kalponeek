@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
+import { useAuth } from './AuthProvider'
 
 const STORIES = [
   'The Cartographers of Sleep',
@@ -23,6 +24,9 @@ const CARDS = [
 ]
 
 export default function HomepageClient() {
+  const { user, displayName, openAuthModal, signOut } = useAuth()
+  const userInitial = (displayName || user?.email || '?')[0].toUpperCase()
+
   const [isDay, setIsDay] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [catsOpen, setCatsOpen] = useState(true)
@@ -31,6 +35,7 @@ export default function HomepageClient() {
   const [toastVisible, setToastVisible] = useState(false)
   const [revealedCards, setRevealedCards] = useState<Set<string>>(new Set())
   const [overlaySearch, setOverlaySearch] = useState('')
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
 
   const headerRef = useRef<HTMLElement>(null)
   const progressRef = useRef<HTMLDivElement>(null)
@@ -42,6 +47,7 @@ export default function HomepageClient() {
   const overlayInputRef = useRef<HTMLInputElement>(null)
   const inlineSearchRef = useRef<HTMLInputElement>(null)
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const userMenuRef = useRef<HTMLDivElement>(null)
 
   // Apply day class to body
   useEffect(() => {
@@ -150,6 +156,18 @@ export default function HomepageClient() {
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
   }, [])
+
+  // Close user menu on outside click
+  useEffect(() => {
+    if (!userMenuOpen) return
+    function handler(e: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [userMenuOpen])
 
   // Focus overlay input when search opens
   useEffect(() => {
@@ -285,7 +303,33 @@ export default function HomepageClient() {
               <a href="#cats">Genres</a>
               <a href="#submit">Submit</a>
             </nav>
-            <a className="pill signin" href="#">Sign in</a>
+            {user ? (
+              <div className="user-menu-wrap" ref={userMenuRef}>
+                <button
+                  className="user-avatar"
+                  onClick={() => setUserMenuOpen(u => !u)}
+                  aria-label="Account menu"
+                  aria-expanded={userMenuOpen}
+                >
+                  {userInitial}
+                </button>
+                {userMenuOpen && (
+                  <div className="user-menu">
+                    <Link href="/submissions/status" className="user-menu-item" onClick={() => setUserMenuOpen(false)}>
+                      My submissions
+                    </Link>
+                    <button
+                      className="user-menu-item danger"
+                      onClick={() => { signOut(); setUserMenuOpen(false) }}
+                    >
+                      Sign out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button className="pill signin" onClick={openAuthModal}>Sign in</button>
+            )}
             <button
               className="pill mode-btn"
               onClick={() => setIsDay(d => !d)}

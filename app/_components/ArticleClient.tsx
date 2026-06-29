@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import type { Article, Comment } from '../_lib/database.types'
+import { useAuth } from './AuthProvider'
 
 const FONT_MAP: Record<string, string> = {
   'Spectral': '"Spectral", Georgia, serif',
@@ -41,6 +42,11 @@ type Props = {
 export default function ArticleClient({ article: propArticle, comments: propComments }: Props) {
   const article = propArticle ?? MOCK_ARTICLE
   const comments = propComments ?? MOCK_COMMENTS
+
+  const { user, displayName, openAuthModal, signOut } = useAuth()
+  const userInitial = (displayName || user?.email || '?')[0].toUpperCase()
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const userMenuRef = useRef<HTMLDivElement>(null)
 
   const [theme, setTheme] = useState<'night' | 'day' | 'sepia' | 'contrast'>('night')
   const [font, setFont] = useState('Spectral')
@@ -157,6 +163,18 @@ export default function ArticleClient({ article: propArticle, comments: propComm
     return () => document.removeEventListener('keydown', onKey)
   }, [])
 
+  // Close user menu on outside click
+  useEffect(() => {
+    if (!userMenuOpen) return
+    function handler(e: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [userMenuOpen])
+
   function handleListen() {
     if (!('speechSynthesis' in window)) return
     if (speaking) {
@@ -210,7 +228,33 @@ export default function ArticleClient({ article: propArticle, comments: propComm
             <button className="pill" onClick={() => setPanelOpen(true)}>
               <span className="aa">Aa</span> Reading
             </button>
-            <a className="pill" href="#" style={{ color: 'var(--paper)' }}>Sign in</a>
+            {user ? (
+              <div className="user-menu-wrap" ref={userMenuRef}>
+                <button
+                  className="user-avatar"
+                  onClick={() => setUserMenuOpen(u => !u)}
+                  aria-label="Account menu"
+                  aria-expanded={userMenuOpen}
+                >
+                  {userInitial}
+                </button>
+                {userMenuOpen && (
+                  <div className="user-menu">
+                    <Link href="/submissions/status" className="user-menu-item" onClick={() => setUserMenuOpen(false)}>
+                      My submissions
+                    </Link>
+                    <button
+                      className="user-menu-item danger"
+                      onClick={() => { signOut(); setUserMenuOpen(false) }}
+                    >
+                      Sign out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button className="pill" onClick={openAuthModal} style={{ color: 'var(--paper)' }}>Sign in</button>
+            )}
           </div>
         </div>
       </header>
@@ -318,26 +362,33 @@ export default function ArticleClient({ article: propArticle, comments: propComm
         {/* COMMENTS */}
         <div className="comments">
           <h3>Comments · {localComments.length}</h3>
-          <div className="cbox">
-            <div className="av" />
-            <textarea
-              placeholder="Add to the conversation…"
-              value={newComment}
-              onChange={e => setNewComment(e.target.value)}
-              onKeyDown={e => {
-                if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && newComment.trim()) {
-                  setLocalComments(prev => [{
-                    id: Date.now().toString(),
-                    article_id: article.id,
-                    author_name: 'You',
-                    body: newComment.trim(),
-                    created_at: 'just now',
-                  }, ...prev])
-                  setNewComment('')
-                }
-              }}
-            />
-          </div>
+          {user ? (
+            <div className="cbox">
+              <div className="av user-av">{userInitial}</div>
+              <textarea
+                placeholder="Add to the conversation…"
+                value={newComment}
+                onChange={e => setNewComment(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && newComment.trim()) {
+                    setLocalComments(prev => [{
+                      id: Date.now().toString(),
+                      article_id: article.id,
+                      author_name: displayName || user.email || 'You',
+                      body: newComment.trim(),
+                      created_at: 'just now',
+                    }, ...prev])
+                    setNewComment('')
+                  }
+                }}
+              />
+            </div>
+          ) : (
+            <div className="comment-gate">
+              <p>Sign in to join the conversation.</p>
+              <button className="btn" onClick={openAuthModal}>Sign in</button>
+            </div>
+          )}
           {localComments.map(c => (
             <div key={c.id} className="comment">
               <div className="av" />
