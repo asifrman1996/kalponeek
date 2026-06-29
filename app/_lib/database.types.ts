@@ -40,3 +40,20 @@ export interface Comment {
   body: string
   created_at: string
 }
+
+export interface Submission {
+  id: string
+  reference_number: string
+  full_name: string
+  email: string
+  bio: string
+  story_title: string
+  genre: string
+  content_rating: string
+  cover_letter: string | null
+  piece: string
+  previously_published: boolean
+  status: string
+  internal_notes: string | null
+  created_at: string
+}
